@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableNativeFeedback, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableNativeFeedback, View, Platform, TouchableOpacity } from 'react-native';
 
 interface Props {
     title: string
@@ -9,23 +9,44 @@ interface Props {
 
 export const Fab = ({title, onPress, position = 'br'}: Props) => {
 
-    return (
-        <View 
-            style={[
-                styles.fabLocation,
-                (position === 'bl') ? styles.left : styles.right
-            ]}
-        >
-            <TouchableNativeFeedback
+    const ios = () => {
+        return (
+            <TouchableOpacity
                 onPress={ onPress }
-                background={TouchableNativeFeedback.Ripple('black', false, 30)}
+                activeOpacity={0.8} 
+                style={[
+                    styles.fabLocation,
+                    (position === 'bl') ? styles.left : styles.right
+                ]}
             >
                 <View style={styles.fab}>
                     <Text style={styles.fabText}> {title} </Text>
                 </View>
-            </TouchableNativeFeedback>
-        </View>
-    )
+            </TouchableOpacity>
+        );
+    }
+
+    const android = () => {
+        return (
+            <View 
+                style={[
+                    styles.fabLocation,
+                    (position === 'bl') ? styles.left : styles.right
+                ]}
+            >
+                <TouchableNativeFeedback
+                    onPress={ onPress }
+                    background={TouchableNativeFeedback.Ripple('black', false, 30)}
+                >
+                    <View style={styles.fab}>
+                        <Text style={styles.fabText}> {title} </Text>
+                    </View>
+                </TouchableNativeFeedback>
+            </View>
+        );
+    }
+
+    return (Platform.OS === 'ios') ? ios() : android();
 }
 
 const styles = StyleSheet.create({
